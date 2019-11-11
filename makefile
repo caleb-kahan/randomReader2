@@ -1,9 +1,3 @@
-
-
-
-
-
-
 all: main.c header.h
 	gcc -o program main.c
 run:
@@ -11,4 +5,3 @@ run:
 clean:
 	rm *.o
 	rm *~
-
