@@ -6,6 +6,10 @@
 #include <fcntl.h>
 #include <string.h>
 
+
+#include "header.h"
+
+
 int main(){
   int array[10];
   int i;

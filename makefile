@@ -1,4 +1,14 @@
+
+
+
+
+
+
 all: main.c header.h
-	gcc main.c
+	gcc -o program main.c
 run:
-	
+	./program
+clean:
+	rm *.o
+	rm *~
+
