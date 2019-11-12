@@ -31,6 +31,7 @@ int main(){
   for(i=0;i<10;i++){
     printf("Copied Value %d: %d\n",i+1,array2[i]);
   }
+  close(fd);
   return 0;
 }
 int randomEntropy(){
