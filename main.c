@@ -10,24 +10,39 @@
 int main(){
   int array[10];
   int i;
+  printf("Generating Random Numbers: \n");
   for(i=0;i<10;i++){
-    array[i] = randomEntropy();;
+    array[i] = randomEntropy();
+    if(array[i]==-1){
+      return 0;
+    }
     printf("Random Number %d: %d\n",i+1,array[i]);
   }
   int fd = open("output.txt", O_WRONLY | O_CREAT, 0755);
   if(fd == -1){
-    errorPrinter("output.txt");
+    errorPrinter("output.txt","open");
     return 0;
   }
-  write(fd,array,10*sizeof(int));
+  printf("\n\nWriting numbers to file...\n\n");
+  if(write(fd,array,10*sizeof(int)) == -1){
+    errorPrinter("output.txt","write");
+    close(fd);
+    return 0;
+  }
   close(fd);
   fd = open("output.txt", O_RDONLY);
   if(fd == -1){
-    errorPrinter("output.txt");
+    errorPrinter("output.txt","open");
     return 0;
   }
   int array2[10];
-  read(fd,array2,10*sizeof(int));
+  printf("Reading numbers from file...\n\n");
+  if(read(fd,array2,10*sizeof(int)) == -1){
+    errorPrinter("output.txt","read");
+    close(fd);
+    return 0;
+  }
+  printf("Verification that written values were the same:\n");
   for(i=0;i<10;i++){
     printf("Copied Value %d: %d\n",i+1,array2[i]);
   }
@@ -38,18 +53,17 @@ int randomEntropy(){
   int randomNumber[1];
   int fd = open("/dev/urandom", O_RDONLY);
   if(fd == -1){
-    errorPrinter("urandom");
-    return 0;
+    errorPrinter("urandom","open");
+    return -1;
   }
-  read(fd, randomNumber, sizeof(int));
-  if(fd==-1){
-    printf("%s\n",strerror(errno));
-    return 0;
+  if(read(fd, randomNumber, sizeof(int)) == -1){
+    errorPrinter("urandom","read");
+    close(fd);
+    return -1;
   }
-  int i;
   close(fd);
   return randomNumber[0];
 }
-void errorPrinter(char *fileName){
-  printf("PROBLEM: When trying to open the file \"%s\", this error was returned: %s\n",fileName,strerror(errno));
+void errorPrinter(char *fileName, char *action){
+  printf("PROBLEM: When trying to %s the file \"%s\", this error was returned: %s\n",action,fileName,strerror(errno));
 }
